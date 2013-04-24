@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gse-mutt-indicator">
+
+  <schema path="/org/gnome/shell/extensions/mutt-indicator/" id="org.gnome.shell.extensions.mutt-indicator">
+
+    <key type="as" name="mail-path">
+      <default>['~/test/']</default>
+      <summary>The path which need be monitored.</summary>
+      <description>Mutli path seperated by comma</description>
+    </key>
+
+    <key type="s" name="main-mail-path">
+      <default>"~/test/"</default>
+      <summary>The path which need be monitored.</summary>
+      <description>Main mail path</description>
+    </key>
+
+    <key type="i" name="update-time">
+      <default>15</default>
+      <summary>Seconds before next update</summary>
+      <description>This is the seconds if we use update. The default is 15.</description>
+    </key>
+
+    <key type="b" name="enable-notification">
+      <default>true</default>
+      <summary>Notification in Status Tray</summary>
+      <description>Display new mail in summary.</description>
+    </key>
+
+  </schema>
+</schemalist>

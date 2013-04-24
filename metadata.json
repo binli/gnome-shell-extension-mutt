@@ -1,0 +1,14 @@
+{
+  "description": "Shows how many mutt new mails", 
+  "name": "Mutt indicator", 
+  "settings-schema": "org.gnome.shell.extensions.mutt-indicator", 
+  "gettext-domain": "gse-mutt-indicator", 
+  "shell-version": [
+    "3.2", 
+    "3.4", 
+    "3.6",
+    "3.8"
+  ], 
+  "url": "https://github.com/binli/gnome-shell-extension-mutt", 
+  "uuid": "mutt-indicator@libin.charles.gmail.com"
+ }
