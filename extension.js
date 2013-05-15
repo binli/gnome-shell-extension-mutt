@@ -9,6 +9,8 @@ const Main = imports.ui.main;
 
 // The PanelMenu provide SystemStatusButton which could manage Sytem Status indicator
 const PanelMenu = imports.ui.panelMenu;
+// The PopupMenu provide 
+const PopupMenu = imports.ui.popupMenu;
 
 let indicator;
 
@@ -22,6 +24,11 @@ MailIndicator.prototype = {
     _init: function() {
         // init iconName, /usr/shar/icons/gnome/scalable/status
         PanelMenu.SystemStatusButton.prototype._init.call(this, 'mail-read-symbolic');
+
+        let head_label = new PopupMenu.PopupMenuItem("New Mail", {
+            reactive: false
+        });
+        this.menu.addMenuItem(head_label);
     }
 }
 
