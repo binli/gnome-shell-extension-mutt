@@ -2,6 +2,8 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 // Import convenience in current plugin
 const Convenience = Me.imports.convenience;
+const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 
@@ -29,7 +31,7 @@ MailIndicator.prototype = {
         // init iconName, /usr/shar/icons/gnome/scalable/status
         PanelMenu.SystemStatusButton.prototype._init.call(this, 'mail-read-symbolic');
 
-        let head_label = new PopupMenu.PopupMenuItem("New Mail", {
+        let head_label = new PopupMenu.PopupMenuItem(_("New Mail"), {
             reactive: false
         });
         this.menu.addMenuItem(head_label);
@@ -37,7 +39,7 @@ MailIndicator.prototype = {
         // add seperator
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        this.prefsMenuItem = new PopupMenu.PopupMenuItem("Extension Settings");
+        this.prefsMenuItem = new PopupMenu.PopupMenuItem(_("Extension Settings"));
         this.menu.addMenuItem(this.prefsMenuItem);
         this.prefsMenuItem.connect("activate", Lang.bind(this, this._launchPrefs));
     },
@@ -60,6 +62,7 @@ MailIndicator.prototype = {
 }
 
 function init() {
+    Convenience.initTranslations(Me.metadata['gettext-domain']);
 }
 
 function enable() {

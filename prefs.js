@@ -1,7 +1,11 @@
 const Gtk = imports.gi.Gtk;
 const GObject = imports.gi.GObject;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const EXTENSIONDIR = Me.dir.get_path()
+const Convenience = Me.imports.convenience;
+const EXTENSIONDIR = Me.dir.get_path();
+
+const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
+const _ = Gettext.gettext;
 
 const MuttIndicatorPrefsWidget = new GObject.Class(
 {
@@ -29,6 +33,7 @@ const MuttIndicatorPrefsWidget = new GObject.Class(
 });
 
 function init() {
+    Convenience.initTranslations(Me.metadata['gettext-domain']);
 }
 
 function buildPrefsWidget() {
