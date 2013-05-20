@@ -21,10 +21,10 @@
       <description>This is the seconds if we use update. The default is 15.</description>
     </key>
 
-    <key type="b" name="enable-notification">
+    <key type="b" name="display-path">
       <default>true</default>
-      <summary>Notification in Status Tray</summary>
-      <description>Display new mail in summary.</description>
+      <summary>Display the full path in PopupMenu</summary>
+      <description>Display the full path in PopupMenu, the default is true</description>
     </key>
 
   </schema>
