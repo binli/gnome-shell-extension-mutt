@@ -3,14 +3,14 @@
 
   <schema path="/org/gnome/shell/extensions/mutt-indicator/" id="org.gnome.shell.extensions.mutt-indicator">
 
-    <key type="as" name="mail-path">
-      <default>['~/test/']</default>
+    <key type="as" name="mail-paths">
+      <default>['/work/mail/bili/INBOX','bili','/work/mail/libin/INBOX','libin']</default>
       <summary>The path which need be monitored.</summary>
       <description>Mutli path seperated by comma</description>
     </key>
 
     <key type="s" name="main-mail-path">
-      <default>"~/test/"</default>
+      <default>"/work/mail/bili/INBOX:/work/mail/libin/INBOX"</default>
       <summary>The path which need be monitored.</summary>
       <description>Main mail path</description>
     </key>
