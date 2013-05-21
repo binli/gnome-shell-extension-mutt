@@ -69,6 +69,31 @@ MailIndicator.prototype = {
         }
     },
 
+    _launchMutt: function(menuItem)
+    {
+        let _path_dir_open;
+        let _appSys = Shell.AppSystem.get_default();
+        let _gsmPrefs = _appSys.lookup_app('mutt.desktop');
+
+        // The item looks like "(n) in libin [/work/main/libin/INBOX/]"
+        let _labelName = menuItem.label.get_text().split(' ');
+        if (_labelName.length < 3 ) {
+            log('something wrong in menu');
+            return;
+        }
+
+        // from the path name to find the path
+        for (let i = 0; i < this._paths.length; i=i+2)
+        {
+            if (this._paths[i+1] == _labelName[2])
+                _path_dir_open = this._paths[i];
+        }
+
+        // Why it can't work for '-f /work/mail/bili/research-devel/'?
+        _gsmPrefs.launch(global.display.get_current_time_roundtrip(),
+                        ['-f' + _path_dir_open], -1, null);
+    },
+
     _checkMailDirValid: function()
     {
     },
@@ -101,6 +126,8 @@ MailIndicator.prototype = {
                 mail_label = new PopupMenu.PopupMenuItem('(' + g_mails[i] + ') in ' + this._paths[2*i+1]);
             else
                 mail_label = new PopupMenu.PopupMenuItem('(' + g_mails[i] + ') in ' + this._paths[2*i+1] + ' [' + this._paths[2*i] + ']');
+
+            mail_label.connect("activate", Lang.bind(this, this._launchMutt));
             this.menu.addMenuItem(mail_label, 1);
         }
     },
