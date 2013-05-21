@@ -16,11 +16,8 @@ const PopupMenu = imports.ui.popupMenu;
 const Shell = imports.gi.Shell;
 
 const Lang = imports.lang;
-// ListDirAsync provided by fileUtils
-const FileUtils = imports.misc.fileUtils
 
 let g_settings;
-let g_mails = [];
 let indicator;
 
 function MailIndicator() {
@@ -32,13 +29,13 @@ MailIndicator.prototype = {
 
     _init: function()
     {
-        // init iconName, /usr/shar/icons/gnome/scalable/status
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'mail-read-symbolic');
+        // init iconName, /usr/share/icons/gnome/scalable/status
+        PanelMenu.SystemStatusButton.prototype._init.call(this, 'mail-unread-symbolic');
 
-        let head_label = new PopupMenu.PopupMenuItem(_("New Mail"), {
+        this._menuItemHead = new PopupMenu.PopupMenuItem(_("checking new mail"), {
             reactive: false
         });
-        this.menu.addMenuItem(head_label);
+        this.menu.addMenuItem(this._menuItemHead);
 
         // add seperator
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -47,7 +44,7 @@ MailIndicator.prototype = {
         this.menu.addMenuItem(this.prefsMenuItem);
         this.prefsMenuItem.connect("activate", Lang.bind(this, this._launchPrefs));
 
-        this._displayPath = g_settings.get_strv('display-path');
+        this._displayPath = g_settings.get_boolean('display-path');
 
         this._checkNewMail();
         this._updateUI();
@@ -89,13 +86,22 @@ MailIndicator.prototype = {
                 _path_dir_open = this._paths[i];
         }
 
-        // Why it can't work for '-f /work/mail/bili/research-devel/'?
+        // TODO: Why it can't work for '-f /work/mail/bili/research-devel/'?
         _gsmPrefs.launch(global.display.get_current_time_roundtrip(),
                         ['-f' + _path_dir_open], -1, null);
     },
 
     _checkMailDirValid: function()
     {
+        // TODO: we should check the valid of the mail path, 
+        //       should include the cur, new, tmp
+    },
+
+    _onMailDirChanged: function(m, f, of, type)
+    {
+        if (type == Gio.FileMonitorEvent.CREATED || type == Gio.FileMonitorEvent.DELETED) {
+            this._updateUI();
+        }
     },
 
     _checkNewMail: function()
@@ -105,30 +111,46 @@ MailIndicator.prototype = {
         this._paths_num = this._paths.length / 2;
         // every path will have a monitor
         this._monitors = new Array(this._paths_num);
-        g_mails = new Array(this._paths_num);
-        this._labels = new Array(this._paths_num);
+        this._mailsCount = new Array(this._paths_num);
+        this._menuItemLabels = new Array(this._paths_num);
+        this._filePath = new Array(this._paths_num);
 
         for ( let i = 0; i < this._paths_num; i++)
         {
-            let file_path = Gio.file_new_for_path(this._paths[2*i] + '/new/');
-            log(file_path.get_path());
-            g_mails[i] = this._listDir(file_path);
+            this._filePath[i] = Gio.file_new_for_path(this._paths[2*i] + '/new/');
+            this._mailsCount[i] = this._listDir(this._filePath[i]);
+            this._monitors[i] = this._filePath[i].monitor_directory(Gio.FileMonitorFlags.NONE, null);
+            this._monitors[i].connect('changed', Lang.bind(this, this._onMailDirChanged));
+            if (this._displayPath)
+                this._menuItemLabels[i] = new PopupMenu.PopupMenuItem('(' + this._mailsCount[i] + ') in ' + this._paths[2*i+1] + ' [' + this._paths[2*i] + ']');
+            else
+                this._menuItemLabels[i] = new PopupMenu.PopupMenuItem('(' + this._mailsCount[i] + ') in ' + this._paths[2*i+1]);
+            this._menuItemLabels[i].connect("activate", Lang.bind(this, this._launchMutt));
+            this.menu.addMenuItem(this._menuItemLabels[i], 1);
         }
     },
 
     _updateUI: function(item)
     {
+        let _totalMails = 0;
+        // just re-caculate all the directory again.
         for ( let i = 0; i < this._paths_num; i++)
         {
-            let mail_label;
-            log('_updateUI: the number is ' + i + 'the mail number is' + g_mails[i]);
+            this._mailsCount[i] = this._listDir(this._filePath[i]);
+            log('_updateUI: the mailbox(' + i + ') have ' + this._mailsCount[i] + ' mails');
             if (this._displayPath)
-                mail_label = new PopupMenu.PopupMenuItem('(' + g_mails[i] + ') in ' + this._paths[2*i+1]);
+                this._menuItemLabels[i].label.set_text('(' + this._mailsCount[i] + ') in ' + this._paths[2*i+1] + ' [' + this._paths[2*i] + ']');
             else
-                mail_label = new PopupMenu.PopupMenuItem('(' + g_mails[i] + ') in ' + this._paths[2*i+1] + ' [' + this._paths[2*i] + ']');
-
-            mail_label.connect("activate", Lang.bind(this, this._launchMutt));
-            this.menu.addMenuItem(mail_label, 1);
+                this._menuItemLabels[i].label.set_text('(' + this._mailsCount[i] + ') in ' + this._paths[2*i+1]);
+            _totalMails += this._mailsCount[i];
+        }
+        if (_totalMails == 0) {
+            this.setIcon('mail-read-symbolic');
+            this._menuItemHead.label.set_text(_("No new mails"));
+        }
+        else {
+            this.setIcon('mail-unread-symbolic');
+            this._menuItemHead.label.set_text(_totalMails + " " + _("new mails"));
         }
     },
 
