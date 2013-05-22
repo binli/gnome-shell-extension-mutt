@@ -1,7 +1,7 @@
 gnome-extension-mutt
 =====================
 
-Show new mail in gnome-shell when you are using mutt.
+Show new mail in gnome-shell when you are using [mutt].
 
 ![Screenshot with new mails][screenshot]
 ![Screenshot without new mails][screenshot-nomails]
@@ -38,5 +38,8 @@ For openSUSE with zypper:
 
 `zypper install mutt`
 
+Authors : [authors]
+
+[mutt]: http://www.mutt.org/
 [screenshot]: https://raw.github.com/wiki/binli/gnome-shell-extension-mutt/mutt-indicator.png
 [screenshot-nomails]: https://raw.github.com/wiki/binli/gnome-shell-extension-mutt/mutt-indicator-nomails.png
