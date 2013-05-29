@@ -38,7 +38,9 @@ For openSUSE with zypper:
 
 `zypper install mutt`
 
-Authors : [authors]
+For Ubuntu with apt:
+
+ apt-get install mutt
 
 [mutt]: http://www.mutt.org/
 [screenshot]: https://raw.github.com/wiki/binli/gnome-shell-extension-mutt/mutt-indicator.png
